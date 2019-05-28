@@ -2,7 +2,7 @@
 
 This web API demonstrates how to use REST API provided by Azure API Management to perform operations on selected entities, such as users, groups, products, and subscriptions.
 Not all functionality have been implemented in this proxy service and some of collections using paging that has not been made use of in this proxy.
-Please, refer to [APIM docs]:https://docs.microsoft.com/en-us/rest/api/apimanagement/ for full documentation.
+Please, refer to [APIM docs](https://docs.microsoft.com/en-us/rest/api/apimanagement/) for full documentation.
 It can be used as a facade to encapsulate the authentication and url setup for services that might require to interact with an APIM instance.
 
 ## Requirements
