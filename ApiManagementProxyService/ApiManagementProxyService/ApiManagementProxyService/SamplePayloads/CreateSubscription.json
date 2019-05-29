@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "state": "active",
+    "displayName": "displayname",
+    "scope": "products/<productId>",
+    "ownerId": "users/<userId>"
+  }
+}

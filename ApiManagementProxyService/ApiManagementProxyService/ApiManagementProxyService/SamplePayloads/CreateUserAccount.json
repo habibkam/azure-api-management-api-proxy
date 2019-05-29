@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "firstName": "Test",
+    "lastName": "Test",
+    "email": "test@test.com",
+    "confirmation": "invite"
+  }
+}
