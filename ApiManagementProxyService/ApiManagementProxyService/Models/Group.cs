@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// APIM  custom user group
+    /// Custom APIM user group
     /// </summary>
     [DataContract]
     public class ApimUserGroup

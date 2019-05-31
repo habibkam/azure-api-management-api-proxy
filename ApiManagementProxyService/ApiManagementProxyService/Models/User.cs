@@ -25,7 +25,37 @@
     }
 
     /// <summary>
-    /// APIM custom sso url result
+    /// Custom APIM user create or update contract
+    /// </summary>
+    [DataContract]
+    public class ApimUserCreateOrUpdateContact
+    {
+        [DataMember(Name = "firstName")]
+        public string FirstName { get; set; }
+        [DataMember(Name = "lastName")]
+        public string LastName { get; set; }
+        [DataMember(Name = "email")]
+        public string Email { get; set; }
+        [DataMember(Name = "password")]
+        public string Password { get; set; }
+
+        public UserCreateOrUpdateContract ToUserCreateContract()
+        {
+            return new UserCreateOrUpdateContract
+            {
+                Properties = new UserCreateOrUpdateProperties
+                {
+                    FirstName = this.FirstName,
+                    LastName = this.LastName,
+                    Email = this.Email,
+                    Password = this.Password
+                }
+            };
+        }
+    }
+
+    /// <summary>
+    /// Custom APIM single sign on url result
     /// </summary>
     [DataContract]
     public class ApimSsoUrlResult
@@ -35,20 +65,20 @@
     }
 
     /// <summary>
-    /// APIM user create contract
+    /// APIM user create or update contract
     /// </summary>
     [DataContract]
-    public class UserCreateContract
+    public class UserCreateOrUpdateContract
     {
         [DataMember(Name = "properties")]
-        public UserCreateProperties Properties { get; set; }
+        public UserCreateOrUpdateProperties Properties { get; set; }
     }
 
     /// <summary>
     /// APIM user create contract properties: more properties might exist. Refer to the documentation
     /// </summary>
     [DataContract]
-    public class UserCreateProperties
+    public class UserCreateOrUpdateProperties
     {
         [DataMember(Name = "firstName")]
         public string FirstName { get; set; }
@@ -56,8 +86,8 @@
         public string LastName { get; set; }
         [DataMember(Name = "email")]
         public string Email { get; set; }
-        [DataMember(Name = "confirmation")]
-        public string Confirmation { get; set; }
+        [DataMember(Name = "password")]
+        public string Password { get; set; }
     }
 
     /// <summary>
@@ -87,7 +117,7 @@
     /// APIM user create contract properties: more properties might exist. Refer to the documentation
     /// </summary>
     [DataContract]
-    public class UserContractProperties : UserCreateProperties
+    public class UserContractProperties : UserCreateOrUpdateProperties
     {
         [DataMember(Name = "state")]
         public string State { get; set; }

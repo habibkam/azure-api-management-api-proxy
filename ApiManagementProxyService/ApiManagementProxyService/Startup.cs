@@ -23,8 +23,10 @@ namespace ApiManagementProxyService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var httpClient = GetHttpClient().Result;
-            services.AddSingleton(httpClient);
+            services.AddScoped(typeof(HttpClient), (serviceProvider) =>
+            {
+                return GetHttpClient().Result;
+            });
 
             services.Configure<ApimSettings>(Configuration.GetSection("ApimSettings"));
 

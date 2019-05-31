@@ -37,6 +37,40 @@
     }
 
     /// <summary>
+    /// Custom APIM subscription create or update contract
+    /// </summary>
+    [DataContract]
+    public class ApimSubscriptionCreateOrUpdateContract
+    {
+        [DataMember(Name = "ownerId")]
+        public string OwnerId { get; set; }
+        [DataMember(Name = "scope")]
+        public string Scope { get; set; }
+        [DataMember(Name = "state")]
+        public string State { get; set; }
+        public SubscriptionCreateOrUpdateContract ToSubscriptionCreateOrUpdateContract(ApimSettings settings)
+        {
+            return new SubscriptionCreateOrUpdateContract
+            {
+                Properties = new SubscriptionCreateOrUpdateProperties
+                {
+                    State = this.State,
+                    OwnerId = string.Format("subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiManagement/service/{2}/{3}",
+                            settings.SubscriptionId,
+                            settings.ResourceGroupName,
+                            settings.ServiceName,
+                            this.OwnerId),
+                    Scope = string.Format("subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiManagement/service/{2}/{3}",
+                            settings.SubscriptionId,
+                            settings.ResourceGroupName,
+                            settings.ServiceName,
+                            this.Scope)
+                }
+            };
+        }
+    }
+
+    /// <summary>
     /// APIM subscription contract
     /// </summary>
     [DataContract]
@@ -68,8 +102,10 @@
     /// APIM subscription contract properties. More properties might be supported. Refer to the documentation.
     /// </summary>
     [DataContract]
-    public class SubscriptionContractProperties : SubscriptionCreateProperties
+    public class SubscriptionContractProperties : SubscriptionCreateOrUpdateProperties
     {
+        [DataMember(Name = "displayName")]
+        public string DisplayName { get; set; }
         [DataMember(Name = "createdDate")]
         public DateTime CreatedDate { get; set; }
         [DataMember(Name = "startDate")]
@@ -88,20 +124,18 @@
     /// APIM subscription create contract
     /// </summary>
     [DataContract]
-    public class SubscriptionCreateParameters
+    public class SubscriptionCreateOrUpdateContract
     {
         [DataMember(Name = "properties")]
-        public SubscriptionCreateProperties Properties { get; set; }
+        public SubscriptionCreateOrUpdateProperties Properties { get; set; }
     }
 
     /// <summary>
     /// APIM subscription create properties
     /// </summary>
     [DataContract]
-    public class SubscriptionCreateProperties
+    public class SubscriptionCreateOrUpdateProperties
     {
-        [DataMember(Name = "displayName")]
-        public string DisplayName { get; set; }
         [DataMember(Name = "ownerId")]
         public string OwnerId { get; set; }
         [DataMember(Name = "scope")]

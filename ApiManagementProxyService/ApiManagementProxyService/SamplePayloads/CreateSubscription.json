@@ -1,0 +1,5 @@
+{
+  "state": "active",
+  "scope": "products/<productId>",
+  "ownerId": "users/<userId>"
+}

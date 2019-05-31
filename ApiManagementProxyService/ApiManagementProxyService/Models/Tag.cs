@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// APIM custom TAG contract
+    /// Custom APIM tag
     /// </summary>
     [DataContract]
     public class ApimTag

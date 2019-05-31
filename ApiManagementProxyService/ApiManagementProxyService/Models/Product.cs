@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// APIM custom product
+    /// Custom APIM product
     /// </summary>
     [DataContract]
     public class ApimProduct

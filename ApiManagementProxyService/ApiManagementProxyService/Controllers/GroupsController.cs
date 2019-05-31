@@ -16,7 +16,7 @@
     public class GroupsController : ControllerBase
     {
         private readonly HttpClient client;
-        private IOptions<ApimSettings> settings;
+        private readonly IOptions<ApimSettings> settings;
 
         public GroupsController(HttpClient httpClient, IOptions<ApimSettings> settings)
         {
@@ -77,7 +77,7 @@
         }
 
         [HttpDelete("{id}/users/{userId}")]
-        public async Task<ActionResult<Models.ApimUser>> RemoveUserFromGroup([FromBody]Models.UserCreateContract model, string id, string userId)
+        public async Task<ActionResult<Models.ApimUser>> RemoveUserFromGroup([FromBody]Models.UserCreateOrUpdateContract model, string id, string userId)
         {
             var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"groups/{id}/users/{userId}", string.Empty);
             var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);

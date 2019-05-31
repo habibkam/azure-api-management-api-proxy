@@ -53,13 +53,13 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Models.ApimSubscription>> CreateOrUpdateSubscription([FromBody]Models.SubscriptionCreateParameters model, string id, bool? notify)
+        public async Task<ActionResult<Models.ApimSubscription>> CreateOrUpdateSubscription([FromBody]Models.ApimSubscriptionCreateOrUpdateContract model, string id, bool? notify)
         {
-            HandleModelOnwerAndScope(model);
             var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"subscriptions/{id}", (notify != null) ? $"&notify={notify}" : string.Empty);
+            var createOrUpdateSubscriptionContract = model.ToSubscriptionCreateOrUpdateContract(this.settings.Value);
             var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(model, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(createOrUpdateSubscriptionContract, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
             };
 
             var response = await client.SendAsync(request);
@@ -70,9 +70,8 @@
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<Models.ApimSubscription>> UpdateSubsription([FromBody]Models.SubscriptionCreateParameters model, string id, bool? notify)
+        public async Task<ActionResult<Models.ApimSubscription>> UpdateSubsription([FromBody]Models.ApimSubscriptionCreateOrUpdateContract model, string id, bool? notify)
         {
-            HandleModelOnwerAndScope(model);
             var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"subscriptions/{id}", (notify != null) ? $"&notify={notify}" : string.Empty);
             var request = new HttpRequestMessage(HttpMethod.Head, requestUri);
 
@@ -83,7 +82,7 @@
             // optionally handle if match to make sure not to override a subscription after it has been changed
             request = new HttpRequestMessage(HttpMethod.Patch, requestUri)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(model, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(model.ToSubscriptionCreateOrUpdateContract(this.settings.Value), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
             };
 
             request.Headers.TryAddWithoutValidation("If-Match", etags.First().Replace("\"", string.Empty));
@@ -93,20 +92,16 @@
             return NoContent();
         }
 
-        private void HandleModelOnwerAndScope(Models.SubscriptionCreateParameters model)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteSubsription(string id, bool? notify)
         {
-            // optionally transform model so that user doesnt have to specify subscription, resource group name, and or service name prefix to provide owner/scope 
-            model.Properties.OwnerId = string.Format("subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiManagement/service/{2}/{3}",
-                            this.settings.Value.SubscriptionId,
-                            this.settings.Value.ResourceGroupName,
-                            this.settings.Value.ServiceName,
-                            model.Properties.OwnerId);
+            var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"subscriptions/{id}", (notify != null) ? $"&notify={notify}" : string.Empty);
+            var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
 
-            model.Properties.Scope = string.Format("subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiManagement/service/{2}/{3}",
-                this.settings.Value.SubscriptionId,
-                this.settings.Value.ResourceGroupName,
-                this.settings.Value.ServiceName,
-                model.Properties.Scope);
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            return NoContent();
         }
     }
 }

@@ -67,12 +67,12 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Models.ApimUser>> CreateOrUpdateUser([FromBody]Models.UserCreateContract model, string id)
+        public async Task<ActionResult<Models.ApimUser>> CreateOrUpdateUser([FromBody]Models.ApimUserCreateOrUpdateContact model, string id)
         {
             var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"users/{id}", string.Empty);
             var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(model, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(model.ToUserCreateContract(), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.Unicode, "application/json")
             };
 
             var response = await client.SendAsync(request);
@@ -93,6 +93,17 @@
             var responseData = await response.Content.ReadAsAsync<Models.GenerateSsoUrlResult>();
             var value = responseData.ToApimSsoUrlResult();
             return Ok(value);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Models.ApimSsoUrlResult>> DeleteUser(string id)
+        {
+            var requestUri = ApiUriFormatter.GetRequestUri(this.settings.Value, $"users/{id}", string.Empty);
+            var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            return NoContent();
         }
     }
 }
