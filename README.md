@@ -17,7 +17,7 @@ You have:
 
 ### Local
 
-Build and debug the web api locally.
+Build and deploy the web api locally.
 You can use an app like Postman to test the endpoints.
 
 ### Public
